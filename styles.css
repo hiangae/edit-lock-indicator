@@ -1,0 +1,19 @@
+.edit-lock-status {
+	font-weight: 600;
+}
+
+.edit-lock-banner {
+	background-color: var(--background-modifier-error-hover, rgba(224, 108, 117, 0.12));
+	border-left: 4px solid #e06c75;
+	padding: 8px 12px;
+	margin-bottom: 10px;
+	font-size: 0.85em;
+	border-radius: 4px;
+	color: var(--text-normal);
+}
+
+.edit-lock-badge {
+	margin-left: 6px;
+	font-size: 0.8em;
+	opacity: 0.85;
+}

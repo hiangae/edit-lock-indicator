@@ -1,0 +1,10 @@
+{
+  "id": "edit-lock-indicator",
+  "name": "Edit Lock Indicator",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "여러 사용자가 같은 보관함(vault)을 동기화해서 쓸 때, 다른 사용자가 현재 편집 중인 파일을 표시합니다.",
+  "author": "B.Y.Heo",
+  "authorUrl": "https://github.com/hiangae/Edit-Lock-Indicator",
+  "isDesktopOnly": false
+}
