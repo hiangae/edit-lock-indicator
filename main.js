@@ -210,8 +210,13 @@ module.exports = class EditLockIndicatorPlugin extends Plugin {
 	getOpenMarkdownPaths() {
 		const paths = new Set();
 		this.app.workspace.getLeavesOfType("markdown").forEach((leaf) => {
-			const file = leaf.view && leaf.view.file;
-			if (file) paths.add(file.path);
+			const view = leaf.view;
+			const file = view && view.file;
+			if (!file) return;
+			// 읽기 모드(preview)로만 열려있는 파일은 "편집 중"으로 치지 않음
+			const mode = view.getMode ? view.getMode() : "source";
+			if (mode !== "source") return;
+			paths.add(file.path);
 		});
 		return paths;
 	}
@@ -304,8 +309,16 @@ module.exports = class EditLockIndicatorPlugin extends Plugin {
 	}
 
 	updateStatusBar() {
+		const leaf = this.app.workspace.activeLeaf;
+		const view = leaf && leaf.view;
 		const file = this.app.workspace.getActiveFile();
-		if (!file) {
+		if (!file || !view || view.getViewType() !== "markdown") {
+			this.statusBarEl.setText("");
+			return;
+		}
+		const mode = view.getMode ? view.getMode() : "source";
+		if (mode !== "source") {
+			// 읽기 모드에서는 표시하지 않음
 			this.statusBarEl.setText("");
 			return;
 		}
@@ -324,11 +337,14 @@ module.exports = class EditLockIndicatorPlugin extends Plugin {
 			const view = leaf.view;
 			const file = view && view.file;
 			if (!file) return;
-			const lock = this.currentLocks[file.path];
-			const lockedByOther = lock && lock.userId !== this.identity.userId;
 
 			const container = view.contentEl;
 			let banner = container.querySelector(":scope > .edit-lock-banner");
+
+			const mode = view.getMode ? view.getMode() : "source";
+			const lock = this.currentLocks[file.path];
+			const lockedByOther =
+				mode === "source" && lock && lock.userId !== this.identity.userId;
 
 			if (lockedByOther) {
 				const minutesAgo = Math.max(
